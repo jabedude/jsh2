@@ -38,8 +38,16 @@ void jsh_loop(void){
     do {
 
         printf(JSH_PROMPT);
+
         cmd = jsh_get_cmd();
+
         args = jsh_get_args(cmd);
+        // Testing if args is a built-in
+        for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
+            if (strcmp(args[0], cmd_table[i].name) == 0) {
+                (*cmd_table[i].func)(args[0]);
+            }
+        }
         exit = jsh_exec(args);
 
         free(cmd);
