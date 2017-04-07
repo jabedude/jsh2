@@ -1,20 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+#include <sys/wait.h>
 
 #define JSH_PROMPT "jsh # "
 #define JSH_RL_BUFSIZE 1024
 #define JSH_TOK_BUFSIZE 64
 #define JSH_TOK_DELIM " \r\n\t\a"
 
-void jsh_loop(void);
-char *jsh_get_cmd(void);
-char **jsh_get_args(char *cmd);
-int jsh_exec(char **args);
+#include "jsh.h"
+
+fun_desc_t cmd_table[] = {
+    {cmd_exit, "exit", "exit this shell"},
+    {cmd_cd, "cd", "change current directory"},
+    {cmd_help, "?", "print this menu"},
+};
 
 int main(int argc, char **argv){
     
-    //Load config?
+    //Load config here (/etc/jsh/jsh.conf)?
 
     //command loop
     jsh_loop();
@@ -109,6 +115,39 @@ char **jsh_get_args(char *cmd){
 }
 
 int jsh_exec(char **args){
-    return 0;
+    pid_t pid;
+    //int stat;
+
+    pid = fork();
+    // Child
+    if (pid == 0) {
+        if (execvp(args[0], args) == -1) {
+            fprintf(stderr, "jsh error!\n");
+            exit(-1);
+        }
+    } else if (pid < 0) {
+        fprintf(stderr, "jsh error!\n");
+        exit(-1);
+    } else {
+        wait(&pid);
+    }
+    return 1;
 }
 
+// Built-in help menu
+int cmd_help(char *cmd) {
+    for (int i = 0; i < sizeof(cmd_table) / sizeof(fun_desc_t); i++)
+    printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
+    return 1;
+}
+
+// Built-in exit function
+int cmd_exit(char *cmd) {
+    exit(0);
+}
+
+// Built-in change dir
+int cmd_cd(char *cmd) {
+    chdir(cmd);
+    return 0;
+}
