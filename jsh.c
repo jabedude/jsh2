@@ -36,7 +36,6 @@ void jsh_loop(void){
     int exit;
 
     do {
-
         printf(JSH_PROMPT);
 
         cmd = jsh_get_cmd();
@@ -48,6 +47,8 @@ void jsh_loop(void){
                 (*cmd_table[i].func)(args[0]);
             }
         }
+
+        // TODO: only exec if not a built-in
         exit = jsh_exec(args);
 
         free(cmd);
@@ -144,8 +145,8 @@ int jsh_exec(char **args){
 
 // Built-in help menu
 int cmd_help(char *cmd) {
-    for (int i = 0; i < sizeof(cmd_table) / sizeof(fun_desc_t); i++)
-    printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
+    for (int i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
+        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
     return 1;
 }
 
@@ -155,7 +156,8 @@ int cmd_exit(char *cmd) {
 }
 
 // Built-in change dir
+// TODO not working
 int cmd_cd(char *cmd) {
     chdir(cmd);
-    return 0;
+    return 1;
 }
