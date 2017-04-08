@@ -50,7 +50,7 @@ void jsh_loop(void){
         // Testing if args is a built-in
         for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
             if (strcmp(args[0], cmd_table[i].name) == 0) {
-                (*cmd_table[i].func)(args[0]);
+                (*cmd_table[i].func)(args[1]);
                 is_blt = true;
             }
         }
@@ -163,8 +163,8 @@ int cmd_exit(char *cmd) {
 }
 
 // Built-in change dir
-// TODO not working
 int cmd_cd(char *cmd) {
     chdir(cmd);
     return 1;
 }
+
