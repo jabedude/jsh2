@@ -19,18 +19,18 @@ fun_desc_t cmd_table[] = {
     {cmd_help, "?", "print this menu"},
 };
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
     
-    //Load config here (/etc/jsh/jsh.conf)?
+    // TODO: Load config here (/etc/jsh/jsh.conf)?
 
-    //command loop
+    // command loop
     jsh_loop();
 
     return 0;
 
 }
 
-void jsh_loop(void){
+void jsh_loop(void) {
 
     char *cmd;
     char **args;
@@ -55,7 +55,6 @@ void jsh_loop(void){
             }
         }
 
-        // TODO: only exec if not a built-in
         if (!is_blt)
             exit = jsh_exec(args);
 
@@ -64,8 +63,7 @@ void jsh_loop(void){
     } while(exit);
 }
 
-char *jsh_get_cmd(void){
-    //TODO: replace with getline() in stdio.h
+char *jsh_get_cmd(void) {
 
     int buffsz = JSH_RL_BUFSIZE;
     char *buff = (char *) malloc(sizeof(char) * buffsz);
@@ -99,7 +97,7 @@ char *jsh_get_cmd(void){
     }
 }
 
-char **jsh_get_args(char *cmd){
+char **jsh_get_args(char *cmd) {
     int buffsz = JSH_TOK_BUFSIZE;
     char **toks = (char **) malloc(sizeof(char**) * buffsz);
     char *tok;
@@ -130,7 +128,7 @@ char **jsh_get_args(char *cmd){
     return toks;
 }
 
-int jsh_exec(char **args){
+int jsh_exec(char **args) {
     pid_t pid;
     //int stat;
 
@@ -151,20 +149,21 @@ int jsh_exec(char **args){
 }
 
 // Built-in help menu
-int cmd_help(char *cmd) {
+int cmd_help(char *args) {
     for (int i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
         printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
     return 1;
 }
 
 // Built-in exit function
-int cmd_exit(char *cmd) {
+int cmd_exit(char *args) {
     exit(0);
 }
 
 // Built-in change dir
-int cmd_cd(char *cmd) {
-    chdir(cmd);
+int cmd_cd(char *args) {
+    chdir(args);
+    // TODO: print error if cd to non-existing directory
     return 1;
 }
 

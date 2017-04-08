@@ -7,9 +7,9 @@ char **jsh_get_args(char *cmd);
 int jsh_exec(char **args);
 
 // jsh built-in functions
-int cmd_exit(char *cmd);
-int cmd_cd(char *cmd);
-int cmd_help(char *cmd);
+int cmd_exit(char *args);
+int cmd_cd(char *args);
+int cmd_help(char *args);
 
 // Built-in type
 typedef int cmd_fun_t(char *cmd);
