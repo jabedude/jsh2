@@ -34,7 +34,7 @@ void jsh_loop(void){
 
     char *cmd;
     char **args;
-    int exit;
+    int exit = 1; // This is a hack so jsh handles newlines...dont ask
     bool is_blt;
 
     do {
