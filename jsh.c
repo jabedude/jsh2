@@ -14,8 +14,8 @@
 #include "jsh.h"
 
 fun_desc_t cmd_table[] = {
-    {cmd_exit, "exit", "exit this shell"},
     {cmd_cd, "cd", "change current directory"},
+    {cmd_exit, "exit", "exit this shell"},
     {cmd_help, "?", "print this menu"},
 };
 
@@ -161,6 +161,7 @@ int cmd_exit(char *args) {
 }
 
 // Built-in change dir
+// TODO: add specific message for permission denied errors
 int cmd_cd(char *args) {
     int ret;
 
