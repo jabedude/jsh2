@@ -162,8 +162,12 @@ int cmd_exit(char *args) {
 
 // Built-in change dir
 int cmd_cd(char *args) {
-    chdir(args);
-    // TODO: print error if cd to non-existing directory
+    int ret;
+
+    ret = chdir(args);
+    if (ret)
+        fprintf(stderr, "cd: %s: error\n", args);
+
     return 1;
 }
 
