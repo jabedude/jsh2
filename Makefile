@@ -1,7 +1,7 @@
 SRCS=jsh.c
 
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=-Wall -std=gnu99
 
 all:
 	$(CC) $(CFLAGS) $(SRCS) -o jsh

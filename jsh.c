@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,27 +35,33 @@ void jsh_loop(void){
     char *cmd;
     char **args;
     int exit;
+    bool is_blt;
 
     do {
+        is_blt = false;
         printf(JSH_PROMPT);
 
         cmd = jsh_get_cmd();
+
+        if (cmd[0] == '\0')
+            continue;
 
         args = jsh_get_args(cmd);
         // Testing if args is a built-in
         for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
             if (strcmp(args[0], cmd_table[i].name) == 0) {
                 (*cmd_table[i].func)(args[0]);
+                is_blt = true;
             }
         }
 
         // TODO: only exec if not a built-in
-        exit = jsh_exec(args);
+        if (!is_blt)
+            exit = jsh_exec(args);
 
         free(cmd);
         free(args);
     } while(exit);
-
 }
 
 char *jsh_get_cmd(void){
