@@ -15,9 +15,9 @@ int cmd_help(char *args);
 typedef int cmd_fun_t(char *cmd);
 
 typedef struct {
-    cmd_fun_t *func;
-    char *name;
-    char *doc;
+        cmd_fun_t *func;
+        char *name;
+        char *doc;
 } fun_desc_t;
 
 #endif
