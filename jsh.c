@@ -44,6 +44,7 @@ void jsh_loop(void) {
                         continue;
 
                 args = jsh_get_args(cmd);
+
                 /* Testing if args is a built-in */
                 for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
                         if (strcmp(args[0], cmd_table[i].name) == 0) {
@@ -152,19 +153,29 @@ int cmd_help(char *args) {
         return 1;
 }
 
-/* Built-in exit function */
+/* Built-in exit function 
+ * TODO: change so it returns to jsh_loop() and the last two free()'s are called
+ */
 int cmd_exit(char *args) {
         exit(0);
 }
 
 /* Built-in change dir
- * TODO: if no args, chdir to user home dir
  */
 int cmd_cd(char *args) {
         int ret;
+        const char *hm_dir;
 
-        if (args == NULL)
+        if (args == NULL) {
+                /* getting $HOME var */
+                if ((hm_dir = getenv("HOME"))) {
+                        ret = chdir(hm_dir);
+                        if (ret)
+                                fprintf(stderr, "cd: %s: error: %s\n", args, strerror(errno));
+                } else
+                        return 1;
                 return 1;
+        }
 
         ret = chdir(args);
         if (ret)
