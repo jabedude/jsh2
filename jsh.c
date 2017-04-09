@@ -48,7 +48,7 @@ void jsh_loop(void) {
                 /* Testing if args is a built-in */
                 for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
                         if (strcmp(args[0], cmd_table[i].name) == 0) {
-                                (*cmd_table[i].func)(args[1]);
+                                exit = (*cmd_table[i].func)(args[1]);
                                 is_blt = true;
                         }
                 }
@@ -157,7 +157,7 @@ int cmd_help(char *args) {
  * TODO: change so it returns to jsh_loop() and the last two free()'s are called
  */
 int cmd_exit(char *args) {
-        exit(0);
+        return(0);
 }
 
 /* Built-in change dir
