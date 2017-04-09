@@ -19,7 +19,7 @@ fun_desc_t cmd_table[] = {
  * TODO: Keep history file (.jsh_history)
  */
 int main(int argc, char **argv) {
-        
+        // char *hist_buf = (char *) malloc(sizeof(char) * JSH_HIST_BUFSIZE);
         /* command loop */
         jsh_loop();
 
@@ -33,6 +33,9 @@ void jsh_loop(void) {
         char **args;
         int exit = 0; /* This is a hack so jsh handles newlines...dont ask */
         bool is_blt;
+        FILE *hist_p;
+
+        hist_p = fopen("./.jsh_history", "a");
 
         do {
                 is_blt = false;
@@ -42,6 +45,8 @@ void jsh_loop(void) {
 
                 if (cmd[0] == '\0')
                         continue;
+
+                fprintf(hist_p, "\n%s", cmd);
 
                 args = jsh_get_args(cmd);
 
@@ -59,6 +64,8 @@ void jsh_loop(void) {
                 free(cmd);
                 free(args);
         } while(!exit);
+
+        fclose(hist_p);
 }
 
 char *jsh_get_cmd(void) {

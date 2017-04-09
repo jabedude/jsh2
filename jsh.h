@@ -5,6 +5,7 @@
 
 #define JSH_PROMPT "jsh # "
 #define JSH_RL_BUFSIZE 1024
+#define JSH_HIST_BUFSIZE 1024
 #define JSH_TOK_BUFSIZE 64
 #define JSH_TOK_DELIM " \r\n\t\a"
 
