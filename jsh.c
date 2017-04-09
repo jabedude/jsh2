@@ -6,11 +6,6 @@
 
 #include <sys/wait.h>
 
-#define JSH_PROMPT "jsh # "
-#define JSH_RL_BUFSIZE 1024
-#define JSH_TOK_BUFSIZE 64
-#define JSH_TOK_DELIM " \r\n\t\a"
-
 #include "jsh.h"
 
 fun_desc_t cmd_table[] = {
@@ -19,11 +14,13 @@ fun_desc_t cmd_table[] = {
         {cmd_help, "?", "print this menu"},
 };
 
+/*
+ * TODO: Load config here (/etc/jsh/jsh.conf)
+ * TODO: Keep history file (.jsh_history)
+ */
 int main(int argc, char **argv) {
         
-        // TODO: Load config here (/etc/jsh/jsh.conf)?
-
-        // command loop
+        /* command loop */
         jsh_loop();
 
         return 0;
@@ -34,7 +31,7 @@ void jsh_loop(void) {
 
         char *cmd;
         char **args;
-        int exit = 1; // This is a hack so jsh handles newlines...dont ask
+        int exit = 1; /* This is a hack so jsh handles newlines...dont ask */
         bool is_blt;
 
         do {
@@ -47,7 +44,7 @@ void jsh_loop(void) {
                         continue;
 
                 args = jsh_get_args(cmd);
-                // Testing if args is a built-in
+                /* Testing if args is a built-in */
                 for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
                         if (strcmp(args[0], cmd_table[i].name) == 0) {
                                 (*cmd_table[i].func)(args[1]);
@@ -133,7 +130,7 @@ int jsh_exec(char **args) {
         //int stat;
 
         pid = fork();
-        // Child
+        /* Child */
         if (pid == 0) {
                 if (execvp(args[0], args) == -1) {
                         fprintf(stderr, "jsh error!\n");
@@ -148,26 +145,30 @@ int jsh_exec(char **args) {
         return 1;
 }
 
-// Built-in help menu
+/* Built-in help menu */
 int cmd_help(char *args) {
         for (int i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
                 printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
         return 1;
 }
 
-// Built-in exit function
+/* Built-in exit function */
 int cmd_exit(char *args) {
         exit(0);
 }
 
-// Built-in change dir
-// TODO: add specific message for permission denied errors
+/* Built-in change dir
+ * TODO: if no args, chdir to user home dir
+ */
 int cmd_cd(char *args) {
         int ret;
 
+        if (args == NULL)
+                return 1;
+
         ret = chdir(args);
         if (ret)
-                fprintf(stderr, "cd: %s: error\n", args);
+                fprintf(stderr, "cd: %s: error: %s\n", args, strerror(errno));
 
         return 1;
 }

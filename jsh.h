@@ -1,6 +1,15 @@
 #ifndef JSH_HEADER
 #define JSH_HEADER
 
+#include <errno.h>
+
+#define JSH_PROMPT "jsh # "
+#define JSH_RL_BUFSIZE 1024
+#define JSH_TOK_BUFSIZE 64
+#define JSH_TOK_DELIM " \r\n\t\a"
+
+extern int errno;
+
 void jsh_loop(void);
 char *jsh_get_cmd(void);
 char **jsh_get_args(char *cmd);
