@@ -31,7 +31,7 @@ void jsh_loop(void) {
 
         char *cmd;
         char **args;
-        int exit = 1; /* This is a hack so jsh handles newlines...dont ask */
+        int exit = 0; /* This is a hack so jsh handles newlines...dont ask */
         bool is_blt;
 
         do {
@@ -58,7 +58,7 @@ void jsh_loop(void) {
 
                 free(cmd);
                 free(args);
-        } while(exit);
+        } while(!exit);
 }
 
 char *jsh_get_cmd(void) {
@@ -143,21 +143,20 @@ int jsh_exec(char **args) {
         } else {
                 wait(&pid);
         }
-        return 1;
+        return 0;
 }
 
 /* Built-in help menu */
 int cmd_help(char *args) {
         for (int i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
                 printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
-        return 1;
+        return 0;
 }
 
 /* Built-in exit function 
- * TODO: change so it returns to jsh_loop() and the last two free()'s are called
  */
 int cmd_exit(char *args) {
-        return(0);
+        return(1);
 }
 
 /* Built-in change dir
@@ -173,14 +172,14 @@ int cmd_cd(char *args) {
                         if (ret)
                                 fprintf(stderr, "cd: %s: error: %s\n", args, strerror(errno));
                 } else
-                        return 1;
-                return 1;
+                        return 0;
+                return 0;
         }
 
         ret = chdir(args);
         if (ret)
                 fprintf(stderr, "cd: %s: error: %s\n", args, strerror(errno));
 
-        return 1;
+        return 0;
 }
 
