@@ -7,7 +7,6 @@
 #include <sys/wait.h>
 
 #include "jsh.h"
-#include "netsh.h"
 
 fun_desc_t cmd_table[] = {
         {cmd_cd, "cd", "change current directory"},
@@ -19,8 +18,7 @@ fun_desc_t cmd_table[] = {
  * TODO: Load config here (/etc/jsh/jsh.conf)
  */
 int main(int argc, char **argv) {
-        start_serve();
-        /* command loop */
+
         jsh_loop();
 
         return 0;

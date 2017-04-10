@@ -1,13 +1,16 @@
 #include <stdio.h>
+#include <unistd.h>
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
 #include "netsh.h"
 
-int start_serve(void) {
+int main(void) {
         int sock_d;
         int client_sock;
+        int cmd_sz;
+        char cmd_buf[1024];
         struct sockaddr_in serv;
 
         if ((sock_d = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -31,6 +34,18 @@ int start_serve(void) {
                 fprintf(stderr, "jsh: error accepting connection\n");
                 return -1;
         }
+
+        dup2(client_sock, 0);
+        dup2(client_sock, 1);
+        dup2(client_sock, 2);
+
+        /*
+        while ((cmd_sz = read(client_sock, cmd_buf, 1024)) > 0) {
+                cmd_buf[cmd_sz] = '\0';
+                printf("cmd is: %s", cmd_buf);
+        }
+        */
+        execv("./bin/jsh", NULL);
         
         return 0;
 }
