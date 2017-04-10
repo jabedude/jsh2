@@ -1,4 +1,4 @@
-SRCS=jsh.c
+SRCS=jsh.c netsh.c
 
 CC=gcc
 CFLAGS=-Wall -std=gnu99
