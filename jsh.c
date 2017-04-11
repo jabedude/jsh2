@@ -31,7 +31,6 @@ int main(void) {
  * shell loop function.  tokenizes user input, then exec()'s;
  */
 void jsh_loop(void) {
-
         char *jsh_prompt;
         char *cmd;
         char **args;
@@ -79,7 +78,6 @@ void jsh_loop(void) {
 }
 
 char *jsh_get_cmd(void) {
-
         int buffsz = JSH_RL_BUFSIZE;
         char *buff = (char *) malloc(sizeof(char) * buffsz);
         int p;
