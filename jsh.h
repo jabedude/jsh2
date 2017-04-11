@@ -3,7 +3,6 @@
 
 #include <errno.h>
 
-#define JSH_PROMPT "jsh # "
 #define JSH_RL_BUFSIZE 1024
 #define JSH_HIST_BUFSIZE 1024
 #define JSH_TOK_BUFSIZE 64

@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <sys/wait.h>
+#include <sys/types.h>
 
 #include "jsh.h"
 
@@ -16,9 +17,8 @@ fun_desc_t cmd_table[] = {
 
 /*
  * TODO: Load config here (/etc/jsh/jsh.conf)
- * TODO: Keep history file (.jsh_history)
  */
-int main(int argc, char **argv) {
+int main(void) {
         // char *hist_buf = (char *) malloc(sizeof(char) * JSH_HIST_BUFSIZE);
         /* command loop */
         jsh_loop();
@@ -27,8 +27,12 @@ int main(int argc, char **argv) {
 
 }
 
+/*
+ * shell loop function.  tokenizes user input, then exec()'s;
+ */
 void jsh_loop(void) {
 
+        char *jsh_prompt;
         char *cmd;
         char **args;
         int exit = 0; /* This is a hack so jsh handles newlines...dont ask */
@@ -37,9 +41,15 @@ void jsh_loop(void) {
 
         hist_p = fopen("./.jsh_history", "a");
 
+        if (getuid() == 0)
+                jsh_prompt = "jsh # ";
+        else
+                jsh_prompt = "jsh $ ";
+
         do {
                 is_blt = false;
-                printf(JSH_PROMPT);
+
+                printf("%s", jsh_prompt);
 
                 cmd = jsh_get_cmd();
 
@@ -51,7 +61,7 @@ void jsh_loop(void) {
                 args = jsh_get_args(cmd);
 
                 /* Testing if args is a built-in */
-                for (int i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
+                for (size_t i = 0; i < (sizeof(cmd_table)/sizeof(cmd_table[0])); i++) {
                         if (strcmp(args[0], cmd_table[i].name) == 0) {
                                 exit = (*cmd_table[i].func)(args[1]);
                                 is_blt = true;
@@ -153,20 +163,34 @@ int jsh_exec(char **args) {
         return 0;
 }
 
-/* Built-in help menu */
+/* 
+ * Built-in help menu 
+ */
 int cmd_help(char *args) {
-        for (int i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
-                printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
-        return 0;
+        if (args == NULL) {
+                for (size_t i = 0; i < sizeof(cmd_table) / sizeof(cmd_table[0]); i++)
+                        printf("%s - %s\n", cmd_table[i].name, cmd_table[i].doc);
+                return 0;
+        } else {
+                fprintf(stderr, "jsh: error!\n");
+                return 0;
+        }
 }
 
-/* Built-in exit function 
+/* 
+ * Built-in exit function 
  */
 int cmd_exit(char *args) {
-        return(1);
+        if (args == NULL)
+                return(1);
+        else {
+                fprintf(stderr, "jsh: error!\n");
+                return 0;
+        }
 }
 
-/* Built-in change dir
+/* 
+ * Built-in change dir
  */
 int cmd_cd(char *args) {
         int ret;
