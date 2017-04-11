@@ -34,7 +34,7 @@ void jsh_loop(void) {
         char *jsh_prompt;
         char *cmd;
         char **args;
-        int exit = 0; /* This is a hack so jsh handles newlines...dont ask */
+        int exit = 0;
         bool is_blt;
         FILE *hist_p;
 
@@ -72,7 +72,7 @@ void jsh_loop(void) {
 
                 free(cmd);
                 free(args);
-        } while(!exit);
+        } while (!exit);
 
         fclose(hist_p);
 }
@@ -88,7 +88,7 @@ char *jsh_get_cmd(void) {
                 exit(-1);
         }
 
-        while(1) {
+        while (true) {
                 p = getchar();
                 if (p == EOF || p == '\n') {
                         buff[pos] = '\0';
