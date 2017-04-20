@@ -14,6 +14,7 @@ void jsh_loop(void);
 char *jsh_get_cmd(void);
 char **jsh_get_args(char *cmd);
 int jsh_exec(char **args);
+void jsh_int_handler(int sig_num);
 
 // jsh built-in functions
 int cmd_exit(char *args);

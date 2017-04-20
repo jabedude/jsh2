@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,6 +45,9 @@ void jsh_loop(void) {
                 jsh_prompt = "jsh # ";
         else
                 jsh_prompt = "jsh $ ";
+
+        /* Catches SIGINT ctrl-c */
+        signal(SIGINT, jsh_int_handler);
 
         do {
                 is_blt = false;
@@ -160,6 +164,16 @@ int jsh_exec(char **args) {
         }
         return 0;
 }
+
+/* 
+ * Signal Handler for SIGINT ctrl-c
+ */
+void jsh_int_handler(int sig_num) {
+        signal(SIGINT, jsh_int_handler);
+        printf("\n %d PUNT! \n", sig_num);
+        fflush(stdout);
+}
+
 
 /* 
  * Built-in help menu 
